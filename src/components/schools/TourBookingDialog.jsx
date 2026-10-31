@@ -1,8 +1,6 @@
-import { db } from "@/lib/db";
-
 import React, { useEffect, useState } from "react";
 import { CalendarCheck, Clock, MapPin, Video } from "lucide-react";
-
+import { base44 } from "@/api/base44Client";
 import {
   Dialog,
   DialogContent,
@@ -30,7 +28,7 @@ export default function TourBookingDialog({ school, open, onOpenChange }) {
     if (!open) return;
     let active = true;
     setLoading(true);
-    db.entities.TourSlot.filter({ school_id: school.id }, { sort: "date", limit: 20 })
+    base44.entities.TourSlot.filter({ school_id: school.id }, { sort: "date", limit: 20 })
       .then((page) => {
         if (!active) return;
         const today = new Date().toISOString().slice(0, 10);
@@ -46,7 +44,7 @@ export default function TourBookingDialog({ school, open, onOpenChange }) {
     if (!selected) return;
     setSaving(true);
     try {
-      await db.entities.TourBooking.create({
+      await base44.entities.TourBooking.create({
         slot_id: selected.id,
         school_id: school.id,
         school_name: school.name,
@@ -59,7 +57,7 @@ export default function TourBookingDialog({ school, open, onOpenChange }) {
         status: "CONFIRMED",
         notes,
       });
-      await db.entities.TourSlot.update(selected.id, {
+      await base44.entities.TourSlot.update(selected.id, {
         booked_count: (Number(selected.booked_count) || 0) + 1,
       }).catch(() => null);
       toast({

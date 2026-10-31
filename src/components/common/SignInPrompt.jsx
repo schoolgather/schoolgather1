@@ -20,7 +20,7 @@ export default function SignInPrompt({ title, description, compact = false }) {
         <div className={compact ? "" : "space-y-2"}>
           <p className="font-semibold">{title || "Sign in to continue"}</p>
           <p className="text-sm text-muted-foreground">
-            {description || "Create a free School Gather account to save schools, chat with admissions and apply."}
+            {description || "Create a free EduRoute account to save schools, message admissions and apply."}
           </p>
         </div>
       </div>

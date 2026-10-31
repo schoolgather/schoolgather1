@@ -1,8 +1,6 @@
-import { db } from "@/lib/db";
-
 import React, { useEffect, useRef, useState } from "react";
 import { Send, ArrowLeft, MessagesSquare, Loader2 } from "lucide-react";
-
+import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
@@ -36,7 +34,7 @@ export default function MessagesPanel({ role = "student" }) {
   const loadThreads = () => {
     if (!email) return;
     setLoading(true);
-    db.entities.Thread.filter({ participant_emails: email }, { sort: "-last_message_at", limit: 50 })
+    base44.entities.Thread.filter({ participant_emails: email }, { sort: "-last_message_at", limit: 50 })
       .then((page) => setThreads(page.items || []))
       .catch(() => setThreads([]))
       .finally(() => setLoading(false));
@@ -50,7 +48,7 @@ export default function MessagesPanel({ role = "student" }) {
     if (!activeId) return;
     let mounted = true;
     setLoadingMessages(true);
-    db.entities.Message.filter({ thread_id: activeId }, { sort: "created_date", limit: 200 })
+    base44.entities.Message.filter({ thread_id: activeId }, { sort: "created_date", limit: 200 })
       .then((page) => mounted && setMessages(page.items || []))
       .finally(() => mounted && setLoadingMessages(false));
     return () => {

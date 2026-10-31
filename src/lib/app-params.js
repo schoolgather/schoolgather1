@@ -1,12 +1,6 @@
+import { getAccessToken } from '@base44/sdk';
 
 const isNode = typeof window === 'undefined';
-
-const getAccessToken = () =>
-	(!isNode && (
-		new URLSearchParams(window.location.search).get("access_token") ||
-		window.localStorage.getItem('base44_access_token') ||
-		window.localStorage.getItem('token')
-	)) || null;
 
 const isClearAccessTokenRequested = () =>
 	!isNode && new URLSearchParams(window.location.search).get("clear_access_token") === 'true';
@@ -27,6 +21,7 @@ const getAppParams = () => {
 		appBaseUrl: import.meta.env.VITE_BASE44_APP_BASE_URL,
 	}
 }
+
 
 export const appParams = {
 	...getAppParams()

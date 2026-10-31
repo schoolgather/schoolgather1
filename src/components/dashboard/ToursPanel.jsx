@@ -1,9 +1,7 @@
-import { db } from "@/lib/db";
-
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { CalendarCheck, Clock, MapPin, Video, XCircle } from "lucide-react";
-
+import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/components/ui/use-toast";
@@ -19,7 +17,7 @@ export default function ToursPanel({ role = "student" }) {
     if (!email) return;
     setLoading(true);
     const query = role === "student" ? { student_email: email } : { school_admin_emails: email };
-    db.entities.TourBooking.filter(query, { sort: "date", limit: 60 })
+    base44.entities.TourBooking.filter(query, { sort: "date", limit: 60 })
       .then((page) => setBookings(page.items || []))
       .catch(() => setBookings([]))
       .finally(() => setLoading(false));
@@ -28,7 +26,7 @@ export default function ToursPanel({ role = "student" }) {
   useEffect(load, [email, role]);
 
   const cancel = async (booking) => {
-    await db.entities.TourBooking.update(booking.id, { status: "CANCELLED" });
+    await base44.entities.TourBooking.update(booking.id, { status: "CANCELLED" });
     toast({ title: "Tour cancelled" });
     load();
   };

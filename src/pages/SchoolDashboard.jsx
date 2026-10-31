@@ -1,9 +1,7 @@
-import { db } from "@/lib/db";
-
 import React, { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { Building2, GraduationCap, MessagesSquare } from "lucide-react";
-
+import { base44 } from "@/api/base44Client";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import SignInPrompt from "@/components/common/SignInPrompt";
@@ -11,6 +9,7 @@ import SchoolAnalytics from "@/components/school/SchoolAnalytics";
 import SchoolPipeline from "@/components/school/SchoolPipeline";
 import SchoolSlots from "@/components/school/SchoolSlots";
 import SchoolProfileEditor from "@/components/school/SchoolProfileEditor";
+import SchoolReviews from "@/components/school/SchoolReviews";
 import MessagesPanel from "@/components/dashboard/MessagesPanel";
 import { useSession, mySchools } from "@/lib/permissions";
 
@@ -23,7 +22,7 @@ export default function SchoolDashboard() {
   const [loading, setLoading] = useState(true);
 
   const loadSchools = () => {
-    db.entities.School.list({ sort: "name", limit: 200 })
+    base44.entities.School.list({ sort: "name", limit: 200 })
       .then((page) => {
         const items = page.items || [];
         setSchools(items);
@@ -51,10 +50,10 @@ export default function SchoolDashboard() {
 
   const loadSchoolData = () => {
     if (!school) return;
-    db.entities.Application.filter({ school_id: school.id }, { sort: "-created_date", limit: 200 })
+    base44.entities.Application.filter({ school_id: school.id }, { sort: "-created_date", limit: 200 })
       .then((page) => setApplications(page.items || []))
       .catch(() => setApplications([]));
-    db.entities.TourSlot.filter({ school_id: school.id }, { sort: "date", limit: 50 })
+    base44.entities.TourSlot.filter({ school_id: school.id }, { sort: "date", limit: 50 })
       .then((page) => setSlots(page.items || []))
       .catch(() => setSlots([]));
   };
@@ -150,6 +149,7 @@ export default function SchoolDashboard() {
           <TabsTrigger value="pipeline">Pipeline</TabsTrigger>
           <TabsTrigger value="tours">Tours</TabsTrigger>
           <TabsTrigger value="profile">Profile</TabsTrigger>
+          <TabsTrigger value="reviews">Reviews</TabsTrigger>
           <TabsTrigger value="messages"><MessagesSquare className="mr-1.5 h-3.5 w-3.5" />Messages</TabsTrigger>
         </TabsList>
 
@@ -166,6 +166,9 @@ export default function SchoolDashboard() {
         </TabsContent>
         <TabsContent value="profile" className="mt-5">
           {school && <SchoolProfileEditor school={school} onSaved={loadSchools} />}
+        </TabsContent>
+        <TabsContent value="reviews" className="mt-5">
+          {school && <SchoolReviews school={school} />}
         </TabsContent>
         <TabsContent value="messages" className="mt-5">
           <MessagesPanel role="school_admin" />

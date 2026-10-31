@@ -1,8 +1,6 @@
-import { db } from "@/lib/db";
-
 import React, { useState } from "react";
 import { CalendarPlus, Trash2 } from "lucide-react";
-
+import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -28,7 +26,7 @@ export default function SchoolSlots({ school, slots, onRefresh }) {
     if (!form.date) return;
     setSaving(true);
     try {
-      await db.entities.TourSlot.create({
+      await base44.entities.TourSlot.create({
         school_id: school.id,
         school_name: school.name,
         school_admin_emails: school.admin_emails || [],
@@ -51,7 +49,7 @@ export default function SchoolSlots({ school, slots, onRefresh }) {
   };
 
   const remove = async (slot) => {
-    await db.entities.TourSlot.delete(slot.id);
+    await base44.entities.TourSlot.delete(slot.id);
     toast({ title: "Slot removed" });
     onRefresh?.();
   };

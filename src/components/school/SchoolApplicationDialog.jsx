@@ -1,8 +1,6 @@
-import { db } from "@/lib/db";
-
 import React, { useState } from "react";
 import { FileText, Download } from "lucide-react";
-
+import { base44 } from "@/api/base44Client";
 import {
   Dialog,
   DialogContent,
@@ -39,7 +37,7 @@ export default function SchoolApplicationDialog({ application, open, onOpenChang
 
   const openDocument = async (doc) => {
     try {
-      const { signed_url } = await db.integrations.Core.CreateFileSignedUrl({
+      const { signed_url } = await base44.integrations.Core.CreateFileSignedUrl({
         file_uri: doc.file_uri,
         expires_in: 300,
       });
@@ -62,7 +60,7 @@ export default function SchoolApplicationDialog({ application, open, onOpenChang
       by: "Admissions",
     };
     try {
-      const updated = await db.entities.Application.update(application.id, {
+      const updated = await base44.entities.Application.update(application.id, {
         status,
         interview_at: interviewAt ? new Date(interviewAt).toISOString() : null,
         decision_note: note,

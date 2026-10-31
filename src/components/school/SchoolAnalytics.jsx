@@ -1,8 +1,6 @@
-import { db } from "@/lib/db";
-
 import React, { useEffect, useState } from "react";
 import { Eye, FileDown, ClipboardList, Percent, Trophy } from "lucide-react";
-
+import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
 import { APPLICATION_STATUSES, STATUS_META } from "@/lib/constants";
 import { downloadCsv } from "@/lib/csv";
@@ -13,7 +11,7 @@ export default function SchoolAnalytics({ school, applications }) {
 
   useEffect(() => {
     let active = true;
-    db.entities.ProfileView.filter({ school_id: school.id }, { limit: 500 })
+    base44.entities.ProfileView.filter({ school_id: school.id }, { limit: 500 })
       .then((page) => active && setViews((page.items || []).length))
       .catch(() => active && setViews(0));
     return () => {

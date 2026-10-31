@@ -1,7 +1,3 @@
-export const BRAND_NAME = "School Gather";
-export const BRAND_TAGLINE = "Find your school, together";
-export const BRAND_LOGO = "/LOGO.png";
-
 export const CURRICULA = ["IB", "British", "American", "National", "French", "Other"];
 
 export const APPLICATION_STATUSES = [

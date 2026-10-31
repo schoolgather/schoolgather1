@@ -1,8 +1,6 @@
-import { db } from "@/lib/db";
-
 import React, { useState } from "react";
 import { Search, Megaphone, FileDown } from "lucide-react";
-
+import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -44,7 +42,7 @@ export default function SchoolPipeline({ school, applications, onRefresh }) {
     const now = new Date().toISOString();
     const recipients = applications.filter((a) => a.status !== "REJECTED");
     try {
-      await db.entities.Application.bulkUpdate(
+      await base44.entities.Application.bulkUpdate(
         recipients.map((app) => ({
           id: app.id,
           timeline: [

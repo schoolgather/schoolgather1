@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-
+import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -8,7 +8,6 @@ import { LogIn, Mail, Lock, Loader2 } from "lucide-react";
 import AuthLayout from "@/components/AuthLayout";
 import GoogleIcon from "@/components/GoogleIcon";
 import { safeReturnTo } from "@/lib/authReturnTo";
-import { getSupabase, signInWithGoogle } from "@/lib/supabaseClient";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -24,8 +23,7 @@ export default function Login() {
     setError("");
     setLoading(true);
     try {
-      const { error: signInError } = await getSupabase().auth.signInWithPassword({ email, password });
-      if (signInError) throw signInError;
+      await base44.auth.loginViaEmailPassword(email, password);
       window.location.href = returnTo;
     } catch (err) {
       setError(err.message || "Invalid email or password");
@@ -34,13 +32,8 @@ export default function Login() {
     }
   };
 
-  const handleGoogle = async () => {
-    setError("");
-    try {
-      await signInWithGoogle(returnTo);
-    } catch (err) {
-      setError(err.message || "Google sign-in failed. Please try again.");
-    }
+  const handleGoogle = () => {
+    base44.auth.loginWithProvider("google", returnTo);
   };
 
   return (

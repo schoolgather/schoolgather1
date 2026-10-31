@@ -1,9 +1,7 @@
-import { db } from "@/lib/db";
-
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { ClipboardList, Bookmark, MessagesSquare, CalendarCheck, Sparkles } from "lucide-react";
-
+import { base44 } from "@/api/base44Client";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import SignInPrompt from "@/components/common/SignInPrompt";
@@ -23,7 +21,7 @@ export default function StudentDashboard() {
 
   const loadApplications = () => {
     if (!email) return;
-    db.entities.Application.filter({ student_email: email }, { sort: "-created_date", limit: 100 })
+    base44.entities.Application.filter({ student_email: email }, { sort: "-created_date", limit: 100 })
       .then((page) => setApplications(page.items || []))
       .catch(() => setApplications([]))
       .finally(() => setLoading(false));
@@ -31,7 +29,7 @@ export default function StudentDashboard() {
 
   const loadBookmarks = () => {
     if (!email) return;
-    db.entities.Bookmark.filter({ user_email: email }, { sort: "-created_date", limit: 60 })
+    base44.entities.Bookmark.filter({ user_email: email }, { sort: "-created_date", limit: 60 })
       .then((page) => setBookmarks(page.items || []))
       .catch(() => setBookmarks([]));
   };

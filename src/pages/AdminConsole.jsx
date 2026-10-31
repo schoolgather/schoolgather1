@@ -1,8 +1,6 @@
-import { db } from "@/lib/db";
-
 import React, { useEffect, useState } from "react";
 import { Building2, Plus, ShieldCheck, Users, Trash2, ScrollText } from "lucide-react";
-
+import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -55,10 +53,10 @@ export default function AdminConsole() {
   const load = async () => {
     setLoading(true);
     const [schoolPage, appPage, userList, logPage] = await Promise.all([
-      db.entities.School.list({ sort: "name", limit: 200 }).catch(() => ({ items: [] })),
-      db.entities.Application.list({ sort: "-created_date", limit: 200 }).catch(() => ({ items: [] })),
-      db.entities.User.list().catch(() => []),
-      db.entities.AuditLog.list({ sort: "-created_date", limit: 50 }).catch(() => ({ items: [] })),
+      base44.entities.School.list({ sort: "name", limit: 200 }).catch(() => ({ items: [] })),
+      base44.entities.Application.list({ sort: "-created_date", limit: 200 }).catch(() => ({ items: [] })),
+      base44.entities.User.list().catch(() => []),
+      base44.entities.AuditLog.list({ sort: "-created_date", limit: 50 }).catch(() => ({ items: [] })),
     ]);
     setSchools(schoolPage.items || []);
     setApplications(appPage.items || []);
@@ -73,7 +71,7 @@ export default function AdminConsole() {
   }, [isSuperAdmin]);
 
   const audit = (action, detail, schoolId) =>
-    db.entities.AuditLog.create({
+    base44.entities.AuditLog.create({
       actor_email: email,
       action,
       target_type: "school",
@@ -90,11 +88,11 @@ export default function AdminConsole() {
         .split(",")
         .map((e) => e.trim().toLowerCase())
         .filter(Boolean);
-      const record = await db.entities.School.create({
+      const record = await base44.entities.School.create({
         name: form.name,
         slug: slugify(form.name),
         tagline: "Newly onboarded school",
-        description: "This school just joined School Gather and is still filling in its profile.",
+        description: "This school joined EduRoute recently and is completing its profile.",
         curriculum_type: form.curriculum_type,
         city: form.city,
         country: form.country,
@@ -135,14 +133,14 @@ export default function AdminConsole() {
 
   const toggleStatus = async (school) => {
     const next = school.status === "published" ? "draft" : "published";
-    await db.entities.School.update(school.id, { status: next });
+    await base44.entities.School.update(school.id, { status: next });
     await audit("school.visibility", `${school.name} set to ${next}`, school.id);
     toast({ title: next === "published" ? "School published" : "School unpublished" });
     load();
   };
 
   const removeSchool = async (school) => {
-    await db.entities.School.delete(school.id);
+    await base44.entities.School.delete(school.id);
     await audit("school.removed", `${school.name} removed from the platform`, school.id);
     toast({ title: "School removed" });
     load();
@@ -156,7 +154,7 @@ export default function AdminConsole() {
         .split(",")
         .map((e) => e.trim().toLowerCase())
         .filter(Boolean);
-      await db.entities.School.update(adminsFor.id, { admin_emails: admins });
+      await base44.entities.School.update(adminsFor.id, { admin_emails: admins });
       await audit("school.admins", `Admissions team updated (${admins.length})`, adminsFor.id);
       toast({ title: "Admissions team updated" });
       setAdminsFor(null);
@@ -201,7 +199,7 @@ export default function AdminConsole() {
           <p className="flex items-center gap-1.5 text-sm text-muted-foreground">
             <ShieldCheck className="h-3.5 w-3.5" /> Platform administration
           </p>
-          <h1 className="mt-1 text-3xl font-semibold">School Gather control room</h1>
+          <h1 className="mt-1 text-3xl font-semibold">EduRoute control room</h1>
           <p className="mt-1 text-sm text-muted-foreground">Onboard schools, manage access and audit activity.</p>
         </div>
         <Button onClick={() => setOnboardOpen(true)}>

@@ -1,12 +1,10 @@
-import { db } from "@/lib/db";
-import { getSupabase } from "@/lib/supabaseClient";
-
+import { base44 } from "@/api/base44Client";
 
 const RATE_WINDOW_MS = 60_000;
 const MAX_PER_WINDOW = 6;
 
 async function assertRateLimit(threadId) {
-  const page = await db.entities.Message.filter({ thread_id: threadId }, { sort: "-created_date", limit: 10 });
+  const page = await base44.entities.Message.filter({ thread_id: threadId }, { sort: "-created_date", limit: 10 });
   const items = page.items || [];
   const cutoff = Date.now() - RATE_WINDOW_MS;
   const recent = items.filter((m) => new Date(m.created_date).getTime() > cutoff);
@@ -25,7 +23,7 @@ export async function sendThreadMessage({ thread, sender, content }) {
   await assertRateLimit(thread.id);
 
   const isStudent = sender.email !== thread.student_email;
-  const message = await db.entities.Message.create({
+  const message = await base44.entities.Message.create({
     thread_id: thread.id,
     school_id: thread.school_id,
     participant_emails: thread.participant_emails,
@@ -37,7 +35,7 @@ export async function sendThreadMessage({ thread, sender, content }) {
     read_by_student: !isStudent,
   });
 
-  await db.entities.Thread.update(thread.id, {
+  await base44.entities.Thread.update(thread.id, {
     last_message_at: new Date().toISOString(),
     last_message_preview: text.slice(0, 140),
     admin_unread: isStudent ? (thread.admin_unread || 0) + 1 : 0,
@@ -56,7 +54,7 @@ export async function startThread({ school, student, subject, content }) {
   const text = String(content || "").trim();
   if (!text) throw new Error("Write a message first");
 
-  const thread = await db.entities.Thread.create({
+  const thread = await base44.entities.Thread.create({
     school_id: school.id,
     school_name: school.name,
     school_slug: school.slug,
@@ -70,7 +68,7 @@ export async function startThread({ school, student, subject, content }) {
     student_unread: 0,
   });
 
-  await db.entities.Message.create({
+  await base44.entities.Message.create({
     thread_id: thread.id,
     school_id: school.id,
     participant_emails: participants,
@@ -82,8 +80,9 @@ export async function startThread({ school, student, subject, content }) {
     read_by_student: true,
   });
 
-  const { error: counterError } = await getSupabase().rpc("increment_school_inquiries", { p_school_id: school.id });
-  if (counterError) throw counterError;
+  await base44.entities.School.update(school.id, {
+    inquiries_count: (Number(school.inquiries_count) || 0) + 1,
+  });
 
   return thread;
 }

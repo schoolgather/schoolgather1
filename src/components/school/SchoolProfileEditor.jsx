@@ -1,7 +1,5 @@
-import { db } from "@/lib/db";
-
 import React, { useState } from "react";
-
+import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -64,7 +62,7 @@ export default function SchoolProfileEditor({ school, onSaved }) {
         learning_styles: textToList(form.learning_styles),
         languages: textToList(form.languages),
       };
-      const updated = await db.entities.School.update(school.id, payload);
+      const updated = await base44.entities.School.update(school.id, payload);
       toast({ title: "Profile updated", description: "Your public profile is live." });
       onSaved?.(updated);
     } catch (error) {

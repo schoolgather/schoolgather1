@@ -1,19 +1,17 @@
-import { db } from "@/lib/db";
-
 import React from "react";
 import { Link } from "react-router-dom";
 import { BookmarkX, MapPin, ArrowUpRight } from "lucide-react";
 import { Image } from "@/components/ui/image";
 import { Button } from "@/components/ui/button";
 import { tuitionRange } from "@/lib/geo";
-
+import { base44 } from "@/api/base44Client";
 import { useToast } from "@/components/ui/use-toast";
 
 export default function SavedSchools({ bookmarks, onChange }) {
   const { toast } = useToast();
 
   const remove = async (id) => {
-    await db.entities.Bookmark.delete(id);
+    await base44.entities.Bookmark.delete(id);
     toast({ title: "Removed from saved schools" });
     onChange?.();
   };
