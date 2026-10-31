@@ -26,7 +26,7 @@ export default function SchoolCard({ school, distanceKm, matchScore }) {
           />
         </Link>
         <div className="absolute left-3 top-3 flex flex-wrap gap-1.5">
-          <Badge className="border-0 bg-background/90 text-[11px] font-semibold text-foreground backdrop-blur">
+          <Badge className="border-0 bg-background text-[11px] font-semibold text-foreground">
             {school.curriculum_type}
           </Badge>
           {school.scholarship_available && (

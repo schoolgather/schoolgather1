@@ -20,7 +20,7 @@ export default function SchoolProfileHeader({
     <div className="relative overflow-hidden border-b border-border">
       <div className="absolute inset-0">
         <Image src={school.cover_image_url} alt={school.name} className="h-full w-full object-cover" />
-        <div className="absolute inset-0 bg-gradient-to-t from-primary/95 via-primary/70 to-primary/30" />
+        <div className="absolute inset-0 bg-primary/85" />
       </div>
       <div className="container-page relative py-8 text-primary-foreground sm:py-12">
         <Link

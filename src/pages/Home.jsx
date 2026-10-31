@@ -107,7 +107,7 @@ export default function Home() {
   return (
     <div>
       {/* 3-Second Hero Section */}
-      <section className="relative overflow-hidden border-b border-border/70 bg-secondary/40">
+      <section className="relative overflow-hidden border-b border-border bg-secondary">
         <div className="surface-grid absolute inset-0 opacity-40" />
         <div className="container-page relative py-12 lg:py-20">
           <div className="grid gap-12 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">

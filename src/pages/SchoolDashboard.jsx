@@ -11,6 +11,7 @@ import SchoolAnalytics from "@/components/school/SchoolAnalytics";
 import SchoolPipeline from "@/components/school/SchoolPipeline";
 import SchoolSlots from "@/components/school/SchoolSlots";
 import SchoolProfileEditor from "@/components/school/SchoolProfileEditor";
+import SchoolGalleryManager from "@/components/school/SchoolGalleryManager";
 import MessagesPanel from "@/components/dashboard/MessagesPanel";
 import { useSession, mySchools } from "@/lib/permissions";
 
@@ -165,7 +166,12 @@ export default function SchoolDashboard() {
           {school && <SchoolSlots school={school} slots={slots} onRefresh={loadSchoolData} />}
         </TabsContent>
         <TabsContent value="profile" className="mt-5">
-          {school && <SchoolProfileEditor school={school} onSaved={loadSchools} />}
+          {school && (
+            <div className="space-y-6">
+              <SchoolProfileEditor school={school} onSaved={loadSchools} />
+              <SchoolGalleryManager school={school} />
+            </div>
+          )}
         </TabsContent>
         <TabsContent value="messages" className="mt-5">
           <MessagesPanel role="school_admin" />

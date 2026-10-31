@@ -2,6 +2,7 @@ import { supabase } from "@/lib/supabaseClient";
 
 const TABLES = {
   School: "schools",
+  SchoolPhoto: "school_photos",
   Application: "applications",
   Bookmark: "bookmarks",
   TourBooking: "tour_bookings",

@@ -2,14 +2,14 @@ import { db } from "@/lib/db";
 
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { CalendarCheck, GraduationCap, Mail, Phone, Globe, Users, Languages, Trophy, Sparkles, Images } from "lucide-react";
+import { CalendarCheck, GraduationCap, Mail, Phone, Globe, Users, Languages, Trophy, Sparkles } from "lucide-react";
 
 import SchoolProfileHeader from "@/components/schools/SchoolProfileHeader";
 import FeeScheduleCard from "@/components/schools/FeeScheduleCard";
 import AidCalculator from "@/components/schools/AidCalculator";
 import TourBookingDialog from "@/components/schools/TourBookingDialog";
 import MessageSchoolDialog from "@/components/schools/MessageSchoolDialog";
-import { Image } from "@/components/ui/image";
+import CampusGallery from "@/components/schools/CampusGallery";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { useCompareStore } from "@/lib/store";
@@ -244,21 +244,7 @@ export default function SchoolProfile() {
             </p>
           </section>
 
-          {school.gallery?.length > 0 && (
-            <section className="rounded-2xl border border-border bg-card p-6 shadow-sm">
-              <div className="flex items-center gap-2">
-                <Images className="h-4 w-4 text-primary" />
-                <h2 className="text-xl font-semibold">Campus gallery</h2>
-              </div>
-              <div className="mt-4 grid gap-3 sm:grid-cols-3">
-                {school.gallery.map((src, index) => (
-                  <div key={`${src}-${index}`} className="aspect-[4/3] overflow-hidden rounded-xl bg-secondary">
-                    <Image src={src} alt={`${school.name} campus ${index + 1}`} className="h-full w-full object-cover" />
-                  </div>
-                ))}
-              </div>
-            </section>
-          )}
+          <CampusGallery schoolId={school.id} schoolName={school.name} />
 
           <section className="rounded-2xl border border-border bg-card p-6 shadow-sm">
             <h2 className="text-xl font-semibold">Upcoming tours</h2>

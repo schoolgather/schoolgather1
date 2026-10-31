@@ -2,7 +2,7 @@ import React, { useRef, useState } from "react";
 import { ImagePlus, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
-import { uploadSchoolCover } from "@/lib/schoolImages";
+import { schoolImageUrl, uploadSchoolImage } from "@/lib/schoolImages";
 
 export default function SchoolCoverUploader({ schoolId, value, onChange }) {
   const { toast } = useToast();
@@ -15,8 +15,8 @@ export default function SchoolCoverUploader({ schoolId, value, onChange }) {
     if (!file) return;
     setUploading(true);
     try {
-      const url = await uploadSchoolCover(schoolId, file);
-      onChange(url);
+      const path = await uploadSchoolImage(schoolId, file, "cover");
+      onChange(schoolImageUrl(path));
       toast({ title: "Photo uploaded", description: "Save the profile to publish it." });
     } catch (error) {
       toast({ title: "Upload failed", description: error.message, variant: "destructive" });
