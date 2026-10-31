@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import CompareBar from "@/components/schools/CompareBar";
+import ThemeToggle from "@/components/layout/ThemeToggle";
 import { useCompareStore } from "@/lib/store";
 import { initialsOf, useSession } from "@/lib/permissions";
 import { cn } from "@/lib/utils";
@@ -138,6 +139,7 @@ export default function AppShell() {
             >
               School Portal
             </Link>
+            <ThemeToggle />
             <AccountMenu />
             <Button asChild size="sm" className="hidden sm:inline-flex">
               <Link to="/schools">Find Schools</Link>

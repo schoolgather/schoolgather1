@@ -9,6 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/components/ui/use-toast";
 import { CURRICULA } from "@/lib/constants";
+import SchoolCoverUploader from "@/components/school/SchoolCoverUploader";
 
 const listToText = (list) => (list || []).join(", ");
 const textToList = (text) =>
@@ -150,7 +151,17 @@ export default function SchoolProfileEditor({ school, onSaved }) {
           <Input id="website" value={form.website} onChange={(e) => patch({ website: e.target.value })} className="mt-1.5" />
         </div>
         <div className="sm:col-span-2">
-          <Label htmlFor="cover">Cover image URL</Label>
+          <Label>Cover photo</Label>
+          <div className="mt-1.5">
+            <SchoolCoverUploader
+              schoolId={school.id}
+              value={form.cover_image_url}
+              onChange={(url) => patch({ cover_image_url: url })}
+            />
+          </div>
+        </div>
+        <div className="sm:col-span-2">
+          <Label htmlFor="cover">Or paste a photo link</Label>
           <Input id="cover" value={form.cover_image_url} onChange={(e) => patch({ cover_image_url: e.target.value })} className="mt-1.5" />
         </div>
         <div className="sm:col-span-2">
