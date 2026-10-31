@@ -12,6 +12,7 @@ import AuthLayout from "@/components/AuthLayout";
 import GoogleIcon from "@/components/GoogleIcon";
 import { toast } from "@/components/ui/use-toast";
 import { safeReturnTo } from "@/lib/authReturnTo";
+import { signInWithGoogle } from "@/lib/supabaseClient";
 
 export default function Register() {
   const [email, setEmail] = useState("");
@@ -69,8 +70,13 @@ export default function Register() {
     }
   };
 
-  const handleGoogle = () => {
-    db.auth.loginWithProvider("google", safeReturnTo());
+  const handleGoogle = async () => {
+    setError("");
+    try {
+      await signInWithGoogle(safeReturnTo());
+    } catch (err) {
+      setError(err.message || "Google sign-in failed. Please try again.");
+    }
   };
 
   if (showOtp) {
