@@ -1,0 +1,35 @@
+const db = globalThis.__B44_DB__ || { auth:{ isAuthenticated: async()=>false, me: async()=>null }, entities:new Proxy({}, { get:()=>({ filter:async()=>[], get:async()=>null, create:async()=>({}), update:async()=>({}), delete:async()=>({}) }) }), integrations:{ Core:{ UploadFile:async()=>({ file_url:'' }) } } };
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link
+      rel="icon"
+      type="image/png"
+      href="https://media.db.com/images/public/6ae5a83517eb7a4bd4eec737/5fb4b6cd9_LOGO.png"
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#22c55e" />
+    <title>School Gather — Find, compare and apply to schools</title>
+    <meta
+      name="description"
+      content="School Gather helps families find the right school and apply with confidence — search by curriculum, fees and distance, compare schools side by side, book visits and keep every application in one calm place."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="School Gather — Find, compare and apply to schools" />
+    <meta
+      property="og:description"
+      content="One family profile, every school. Search, compare, visit and apply — without the paperwork."
+    />
+    <meta
+      property="og:image"
+      content="https://media.db.com/images/public/6ae5a83517eb7a4bd4eec737/5fb4b6cd9_LOGO.png"
+    />
+    <meta name="twitter:card" content="summary_large_image" />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>

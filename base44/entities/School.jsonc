@@ -1,0 +1,226 @@
+{
+  "name": "School",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Official school name"
+    },
+    "slug": {
+      "type": "string",
+      "description": "URL friendly identifier"
+    },
+    "tagline": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "curriculum_type": {
+      "type": "string",
+      "enum": [
+        "IB",
+        "British",
+        "American",
+        "National",
+        "French",
+        "Other"
+      ],
+      "description": "Primary curriculum framework"
+    },
+    "city": {
+      "type": "string"
+    },
+    "country": {
+      "type": "string"
+    },
+    "address": {
+      "type": "string"
+    },
+    "latitude": {
+      "type": "number"
+    },
+    "longitude": {
+      "type": "number"
+    },
+    "tuition_min": {
+      "type": "number"
+    },
+    "tuition_max": {
+      "type": "number"
+    },
+    "currency": {
+      "type": "string",
+      "default": "USD"
+    },
+    "fee_items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "label": {
+            "type": "string"
+          },
+          "amount": {
+            "type": "number"
+          }
+        }
+      }
+    },
+    "accreditation_details": {
+      "type": "string"
+    },
+    "age_range": {
+      "type": "string"
+    },
+    "student_teacher_ratio": {
+      "type": "string"
+    },
+    "languages": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "programs": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "facilities": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "extracurriculars": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "learning_styles": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "support_services": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "highlights": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "logo_url": {
+      "type": "string"
+    },
+    "cover_image_url": {
+      "type": "string"
+    },
+    "gallery": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "scholarship_available": {
+      "type": "boolean",
+      "default": false
+    },
+    "merit_scholarship_pct": {
+      "type": "number",
+      "default": 0
+    },
+    "views_count": {
+      "type": "number",
+      "default": 0
+    },
+    "inquiries_count": {
+      "type": "number",
+      "default": 0
+    },
+    "applications_count": {
+      "type": "number",
+      "default": 0
+    },
+    "rating": {
+      "type": "number",
+      "default": 0
+    },
+    "review_count": {
+      "type": "number",
+      "default": 0
+    },
+    "capacity": {
+      "type": "number"
+    },
+    "founded_year": {
+      "type": "number"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "published",
+        "draft"
+      ],
+      "default": "published"
+    },
+    "admin_emails": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Admissions officers who may manage this school"
+    },
+    "contact_email": {
+      "type": "string"
+    },
+    "phone": {
+      "type": "string"
+    },
+    "website": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "name",
+    "slug",
+    "curriculum_type"
+  ],
+  "rls": {
+    "read": {},
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "$or": [
+        {
+          "data.admin_emails": {
+            "$in": [
+              "{{user.email}}"
+            ]
+          }
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

@@ -1,0 +1,56 @@
+{
+  "name": "ProfileView",
+  "type": "object",
+  "properties": {
+    "school_id": {
+      "type": "string"
+    },
+    "school_admin_emails": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "page": {
+      "type": "string",
+      "enum": [
+        "profile",
+        "apply",
+        "tour"
+      ],
+      "default": "profile"
+    }
+  },
+  "required": [
+    "school_id"
+  ],
+  "rls": {
+    "create": {},
+    "read": {
+      "$or": [
+        {
+          "data.school_admin_emails": {
+            "$in": [
+              "{{user.email}}"
+            ]
+          }
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

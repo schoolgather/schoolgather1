@@ -1,0 +1,51 @@
+{
+  "name": "Bookmark",
+  "type": "object",
+  "properties": {
+    "user_email": {
+      "type": "string"
+    },
+    "school_id": {
+      "type": "string"
+    },
+    "school_name": {
+      "type": "string"
+    },
+    "school_slug": {
+      "type": "string"
+    },
+    "city": {
+      "type": "string"
+    },
+    "curriculum_type": {
+      "type": "string"
+    },
+    "tuition_min": {
+      "type": "number"
+    },
+    "tuition_max": {
+      "type": "number"
+    },
+    "logo_url": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "school_id",
+    "user_email"
+  ],
+  "rls": {
+    "create": {
+      "created_by_id": "{{user.id}}"
+    },
+    "read": {
+      "created_by_id": "{{user.id}}"
+    },
+    "update": {
+      "created_by_id": "{{user.id}}"
+    },
+    "delete": {
+      "created_by_id": "{{user.id}}"
+    }
+  }
+}

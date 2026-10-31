@@ -1,0 +1,68 @@
+{
+  "name": "Message",
+  "type": "object",
+  "properties": {
+    "thread_id": {
+      "type": "string"
+    },
+    "school_id": {
+      "type": "string"
+    },
+    "participant_emails": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "sender_email": {
+      "type": "string"
+    },
+    "sender_name": {
+      "type": "string"
+    },
+    "sender_role": {
+      "type": "string",
+      "enum": [
+        "student",
+        "school_admin"
+      ]
+    },
+    "content": {
+      "type": "string"
+    },
+    "read_by_admin": {
+      "type": "boolean",
+      "default": false
+    },
+    "read_by_student": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "required": [
+    "thread_id",
+    "content"
+  ],
+  "rls": {
+    "create": {
+      "data.participant_emails": {
+        "$in": [
+          "{{user.email}}"
+        ]
+      }
+    },
+    "read": {
+      "data.participant_emails": "{{user.email}}"
+    },
+    "update": {
+      "data.participant_emails": {
+        "$in": [
+          "{{user.email}}"
+        ]
+      }
+    },
+    "delete": {
+      "created_by_id": "{{user.id}}"
+    }
+  }
+}

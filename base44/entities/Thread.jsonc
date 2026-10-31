@@ -1,0 +1,72 @@
+{
+  "name": "Thread",
+  "type": "object",
+  "properties": {
+    "school_id": {
+      "type": "string"
+    },
+    "school_name": {
+      "type": "string"
+    },
+    "school_slug": {
+      "type": "string"
+    },
+    "student_email": {
+      "type": "string"
+    },
+    "student_name": {
+      "type": "string"
+    },
+    "participant_emails": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Student plus school admissions officers"
+    },
+    "subject": {
+      "type": "string"
+    },
+    "last_message_at": {
+      "type": "string"
+    },
+    "last_message_preview": {
+      "type": "string"
+    },
+    "admin_unread": {
+      "type": "number",
+      "default": 0
+    },
+    "student_unread": {
+      "type": "number",
+      "default": 0
+    }
+  },
+  "required": [
+    "school_id",
+    "student_email",
+    "participant_emails"
+  ],
+  "rls": {
+    "create": {
+      "data.participant_emails": {
+        "$in": [
+          "{{user.email}}"
+        ]
+      }
+    },
+    "read": {
+      "data.participant_emails": "{{user.email}}"
+    },
+    "update": {
+      "data.participant_emails": {
+        "$in": [
+          "{{user.email}}"
+        ]
+      }
+    },
+    "delete": {
+      "created_by_id": "{{user.id}}"
+    }
+  }
+}

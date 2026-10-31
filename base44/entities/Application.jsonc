@@ -1,0 +1,174 @@
+{
+  "name": "Application",
+  "type": "object",
+  "properties": {
+    "student_email": {
+      "type": "string"
+    },
+    "student_name": {
+      "type": "string"
+    },
+    "guardian_name": {
+      "type": "string"
+    },
+    "guardian_email": {
+      "type": "string"
+    },
+    "guardian_phone": {
+      "type": "string"
+    },
+    "school_id": {
+      "type": "string"
+    },
+    "school_name": {
+      "type": "string"
+    },
+    "school_slug": {
+      "type": "string"
+    },
+    "admin_emails": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Denormalised school admissions contacts for tenant scoping"
+    },
+    "grade_applying": {
+      "type": "string"
+    },
+    "academic_year": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "DRAFT",
+        "SUBMITTED",
+        "UNDER_REVIEW",
+        "INTERVIEW",
+        "ACCEPTED",
+        "REJECTED",
+        "ENROLLED"
+      ],
+      "default": "DRAFT"
+    },
+    "personal_statement": {
+      "type": "string"
+    },
+    "answers": {
+      "type": "object",
+      "properties": {}
+    },
+    "documents": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "file_uri": {
+            "type": "string"
+          },
+          "kind": {
+            "type": "string"
+          },
+          "uploaded_at": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "timeline": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string"
+          },
+          "note": {
+            "type": "string"
+          },
+          "at": {
+            "type": "string"
+          },
+          "by": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "interview_at": {
+      "type": "string"
+    },
+    "decision_note": {
+      "type": "string"
+    },
+    "submitted_at": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "school_id",
+    "student_email"
+  ],
+  "rls": {
+    "create": {
+      "created_by_id": "{{user.id}}"
+    },
+    "read": {
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "data.admin_emails": {
+            "$in": [
+              "{{user.email}}"
+            ]
+          }
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "$and": [
+            {
+              "created_by_id": "{{user.id}}"
+            },
+            {
+              "data.status": {
+                "$in": [
+                  "DRAFT",
+                  "SUBMITTED"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "data.admin_emails": {
+            "$in": [
+              "{{user.email}}"
+            ]
+          }
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "created_by_id": "{{user.id}}"
+    }
+  }
+}

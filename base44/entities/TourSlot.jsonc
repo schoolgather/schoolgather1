@@ -1,0 +1,108 @@
+{
+  "name": "TourSlot",
+  "type": "object",
+  "properties": {
+    "school_id": {
+      "type": "string"
+    },
+    "school_name": {
+      "type": "string"
+    },
+    "school_admin_emails": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "date": {
+      "type": "string",
+      "description": "ISO date, e.g. 2026-11-14"
+    },
+    "start_time": {
+      "type": "string",
+      "description": "24h time, e.g. 10:00"
+    },
+    "duration_minutes": {
+      "type": "number",
+      "default": 45
+    },
+    "capacity": {
+      "type": "number",
+      "default": 6
+    },
+    "booked_count": {
+      "type": "number",
+      "default": 0
+    },
+    "mode": {
+      "type": "string",
+      "enum": [
+        "On campus",
+        "Virtual"
+      ],
+      "default": "On campus"
+    },
+    "meeting_point": {
+      "type": "string"
+    },
+    "notes": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "school_id",
+    "date",
+    "start_time"
+  ],
+  "rls": {
+    "read": {},
+    "create": {
+      "$or": [
+        {
+          "data.school_admin_emails": {
+            "$in": [
+              "{{user.email}}"
+            ]
+          }
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "data.school_admin_emails": {
+            "$in": [
+              "{{user.email}}"
+            ]
+          }
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "data.school_admin_emails": {
+            "$in": [
+              "{{user.email}}"
+            ]
+          }
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    }
+  }
+}

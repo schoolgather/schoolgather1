@@ -1,0 +1,102 @@
+{
+  "name": "TourBooking",
+  "type": "object",
+  "properties": {
+    "slot_id": {
+      "type": "string"
+    },
+    "school_id": {
+      "type": "string"
+    },
+    "school_name": {
+      "type": "string"
+    },
+    "school_admin_emails": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "student_email": {
+      "type": "string"
+    },
+    "student_name": {
+      "type": "string"
+    },
+    "contact_phone": {
+      "type": "string"
+    },
+    "date": {
+      "type": "string"
+    },
+    "start_time": {
+      "type": "string"
+    },
+    "mode": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "CONFIRMED",
+        "CANCELLED",
+        "COMPLETED"
+      ],
+      "default": "CONFIRMED"
+    },
+    "notes": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "slot_id",
+    "school_id",
+    "student_email"
+  ],
+  "rls": {
+    "create": {
+      "created_by_id": "{{user.id}}"
+    },
+    "read": {
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "data.school_admin_emails": {
+            "$in": [
+              "{{user.email}}"
+            ]
+          }
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "data.school_admin_emails": {
+            "$in": [
+              "{{user.email}}"
+            ]
+          }
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "created_by_id": "{{user.id}}"
+    }
+  }
+}
