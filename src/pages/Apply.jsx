@@ -198,11 +198,6 @@ export default function Apply() {
         ? await db.entities.Application.update(application.id, payload)
         : await db.entities.Application.create(payload);
       setApplication(record);
-      if (status === "SUBMITTED") {
-        db.functions
-          .invoke("notifySchoolAdmins", { type: "application", id: record.id })
-          .catch(() => {});
-      }
       toast({
         title: status === "SUBMITTED" ? "Application submitted" : "Draft saved",
         description:

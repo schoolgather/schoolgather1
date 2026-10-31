@@ -9,9 +9,15 @@ export const supabase = (supabaseUrl && supabaseAnonKey)
 
 export const isSupabaseConfigured = () => Boolean(supabase);
 
+const SIGN_IN_UNAVAILABLE = "Sign-in is not available right now. Please try again later.";
+
+export const getSupabase = () => {
+  if (!supabase) throw new Error(SIGN_IN_UNAVAILABLE);
+  return supabase;
+};
+
 export const signInWithGoogle = async (returnTo = "/") => {
-  if (!supabase) throw new Error("Sign-in is not available right now. Please try again later.");
-  const { error } = await supabase.auth.signInWithOAuth({
+  const { error } = await getSupabase().auth.signInWithOAuth({
     provider: "google",
     options: { redirectTo: window.location.origin + returnTo },
   });

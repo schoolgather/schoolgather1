@@ -5,8 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Mail, Loader2, ArrowLeft, CheckCircle2 } from "lucide-react";
 import AuthLayout from "@/components/AuthLayout";
-
-const db = globalThis.__B44_DB__ || { auth:{ isAuthenticated: async()=>false, me: async()=>null }, entities:new Proxy({}, { get:()=>({ filter:async()=>[], get:async()=>null, create:async()=>({}), update:async()=>({}), delete:async()=>({}) }) }), integrations:{ Core:{ UploadFile:async()=>({ file_url:'' }) } } };
+import { getSupabase } from "@/lib/supabaseClient";
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState("");
@@ -19,9 +18,10 @@ export default function ForgotPassword() {
     setError("");
     setLoading(true);
     try {
-      if (db.auth && typeof db.auth.sendPasswordResetEmail === "function") {
-        await db.auth.sendPasswordResetEmail(email);
-      }
+      const { error: resetError } = await getSupabase().auth.resetPasswordForEmail(email, {
+        redirectTo: window.location.origin + "/reset-password",
+      });
+      if (resetError) throw resetError;
       setSent(true);
     } catch (err) {
       setError(err.message || "Failed to send reset email");

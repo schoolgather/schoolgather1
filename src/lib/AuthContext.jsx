@@ -1,143 +1,93 @@
-const db = globalThis.__B44_DB__ || { auth:{ isAuthenticated: async()=>false, me: async()=>null }, entities:new Proxy({}, { get:()=>({ filter:async()=>[], get:async()=>null, create:async()=>({}), update:async()=>({}), delete:async()=>({}) }) }), integrations:{ Core:{ UploadFile:async()=>({ file_url:'' }) } } };
+import React, { createContext, useState, useContext, useEffect, useCallback } from 'react';
 
-import React, { createContext, useState, useContext, useEffect } from 'react';
-
-import { appParams } from '@/lib/app-params';
+import { supabase, getSupabase } from '@/lib/supabaseClient';
 
 const AuthContext = createContext();
 
+const loadAccount = async (authUser) => {
+  const { data: profile, error } = await getSupabase()
+    .from('profiles')
+    .select('id, email, full_name, role')
+    .eq('id', authUser.id)
+    .maybeSingle();
+  if (error) throw error;
+  return {
+    id: authUser.id,
+    email: profile?.email ?? authUser.email ?? '',
+    full_name: profile?.full_name ?? authUser.user_metadata?.full_name ?? '',
+    role: profile?.role ?? 'user',
+  };
+};
+
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoadingAuth, setIsLoadingAuth] = useState(true);
-  const [isLoadingPublicSettings, setIsLoadingPublicSettings] = useState(true);
   const [authError, setAuthError] = useState(null);
   const [authChecked, setAuthChecked] = useState(false);
-  const [appPublicSettings, setAppPublicSettings] = useState(null); // Contains only { id, public_settings }
 
-  useEffect(() => {
-    checkAppState();
+  const applySession = useCallback(async (session) => {
+    if (!session?.user) {
+      setUser(null);
+      setAuthError(null);
+      return;
+    }
+    try {
+      setUser(await loadAccount(session.user));
+      setAuthError(null);
+    } catch (error) {
+      console.error('Failed to load account:', error);
+      setUser(null);
+      setAuthError({ type: 'unknown', message: error.message || 'Failed to load your account' });
+    }
   }, []);
 
-  const checkAppState = async () => {
+  const checkUserAuth = useCallback(async () => {
+    setIsLoadingAuth(true);
     try {
-      setIsLoadingPublicSettings(true);
-      setAuthError(null);
-      
-      try {
-        let publicSettings = null;
-        if (db.app && typeof db.app.getPublicSettings === "function") {
-          publicSettings = await db.app.getPublicSettings();
-        }
-        setAppPublicSettings(publicSettings || {});
-        
-        // If we got the app public settings successfully, check if user is authenticated
-        if (appParams.token) {
-          await checkUserAuth();
-        } else {
-          setIsLoadingAuth(false);
-          setIsAuthenticated(false);
-          setAuthChecked(true);
-        }
-        setIsLoadingPublicSettings(false);
-      } catch (appError) {
-        console.error('App state check failed:', appError);
-        
-        // Handle app-level errors
-        if (appError.status === 403 && appError.data?.extra_data?.reason) {
-          const reason = appError.data.extra_data.reason;
-          if (reason === 'auth_required') {
-            setAuthError({
-              type: 'auth_required',
-              message: 'Authentication required'
-            });
-          } else if (reason === 'user_not_registered') {
-            setAuthError({
-              type: 'user_not_registered',
-              message: 'User not registered for this app'
-            });
-          } else {
-            setAuthError({
-              type: reason,
-              message: appError.message
-            });
-          }
-        } else {
-          setAuthError({
-            type: 'unknown',
-            message: appError.message || 'Failed to load app'
-          });
-        }
-        setIsLoadingPublicSettings(false);
-        setIsLoadingAuth(false);
+      if (supabase) {
+        const { data } = await supabase.auth.getSession();
+        await applySession(data.session);
+      } else {
+        setUser(null);
       }
-    } catch (error) {
-      console.error('Unexpected error:', error);
-      setAuthError({
-        type: 'unknown',
-        message: error.message || 'An unexpected error occurred'
-      });
-      setIsLoadingPublicSettings(false);
-      setIsLoadingAuth(false);
-    }
-  };
-
-  const checkUserAuth = async () => {
-    try {
-      // Now check if the user is authenticated
-      setIsLoadingAuth(true);
-      const currentUser = await db.auth.me();
-      setUser(currentUser);
-      setIsAuthenticated(true);
+    } finally {
       setIsLoadingAuth(false);
       setAuthChecked(true);
-    } catch (error) {
-      console.error('User auth check failed:', error);
-      setIsLoadingAuth(false);
-      setIsAuthenticated(false);
-      setAuthChecked(true);
-      
-      // If user auth fails, it might be an expired token
-      if (error.status === 401 || error.status === 403) {
-        setAuthError({
-          type: 'auth_required',
-          message: 'Authentication required'
-        });
-      }
     }
-  };
+  }, [applySession]);
 
-  const logout = (shouldRedirect = true) => {
+  useEffect(() => {
+    checkUserAuth();
+    if (!supabase) return undefined;
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      (async () => {
+        await applySession(session);
+      })();
+    });
+    return () => subscription.unsubscribe();
+  }, [checkUserAuth, applySession]);
+
+  const logout = async (shouldRedirect = true) => {
     setUser(null);
-    setIsAuthenticated(false);
-    
-    if (shouldRedirect) {
-      // Use the SDK's logout method which handles token cleanup and redirect
-      db.auth.logout(window.location.href);
-    } else {
-      // Just remove the token without redirect
-      db.auth.logout();
-    }
+    if (supabase) await supabase.auth.signOut();
+    if (shouldRedirect) window.location.href = '/';
   };
 
   const navigateToLogin = () => {
-    // Use the SDK's redirectToLogin method
-    db.auth.redirectToLogin(window.location.href);
+    const returnTo = window.location.pathname + window.location.search;
+    window.location.href = '/login?returnTo=' + encodeURIComponent(returnTo);
   };
 
   return (
-    <AuthContext.Provider value={{ 
-      user, 
-      isAuthenticated, 
+    <AuthContext.Provider value={{
+      user,
+      isAuthenticated: Boolean(user),
       isLoadingAuth,
-      isLoadingPublicSettings,
       authError,
-      appPublicSettings,
       authChecked,
       logout,
       navigateToLogin,
       checkUserAuth,
-      checkAppState
     }}>
       {children}
     </AuthContext.Provider>

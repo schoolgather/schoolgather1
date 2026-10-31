@@ -1,4 +1,5 @@
 import { db } from "@/lib/db";
+import { getSupabase } from "@/lib/supabaseClient";
 
 
 const RATE_WINDOW_MS = 60_000;
@@ -81,11 +82,8 @@ export async function startThread({ school, student, subject, content }) {
     read_by_student: true,
   });
 
-  await db.entities.School.update(school.id, {
-    inquiries_count: (Number(school.inquiries_count) || 0) + 1,
-  });
-
-  db.functions.invoke("notifySchoolAdmins", { type: "inquiry", id: thread.id }).catch(() => {});
+  const { error: counterError } = await getSupabase().rpc("increment_school_inquiries", { p_school_id: school.id });
+  if (counterError) throw counterError;
 
   return thread;
 }

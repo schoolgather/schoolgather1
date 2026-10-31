@@ -1,5 +1,3 @@
-const db = globalThis.__B44_DB__ || { auth:{ isAuthenticated: async()=>false, me: async()=>null }, entities:new Proxy({}, { get:()=>({ filter:async()=>[], get:async()=>null, create:async()=>({}), update:async()=>({}), delete:async()=>({}) }) }), integrations:{ Core:{ UploadFile:async()=>({ file_url:'' }) } } };
-
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
@@ -10,7 +8,7 @@ import { LogIn, Mail, Lock, Loader2 } from "lucide-react";
 import AuthLayout from "@/components/AuthLayout";
 import GoogleIcon from "@/components/GoogleIcon";
 import { safeReturnTo } from "@/lib/authReturnTo";
-import { signInWithGoogle } from "@/lib/supabaseClient";
+import { getSupabase, signInWithGoogle } from "@/lib/supabaseClient";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -26,7 +24,8 @@ export default function Login() {
     setError("");
     setLoading(true);
     try {
-      await db.auth.loginViaEmailPassword(email, password);
+      const { error: signInError } = await getSupabase().auth.signInWithPassword({ email, password });
+      if (signInError) throw signInError;
       window.location.href = returnTo;
     } catch (err) {
       setError(err.message || "Invalid email or password");
