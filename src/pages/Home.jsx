@@ -108,7 +108,7 @@ export default function Home() {
     <div>
       {/* 3-Second Hero Section */}
       <section className="relative overflow-hidden border-b border-border bg-secondary">
-        <div className="surface-grid absolute inset-0 opacity-40" />
+        <div className="surface-grid absolute inset-0" />
         <div className="container-page relative py-12 lg:py-20">
           <div className="grid gap-12 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
             <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
@@ -216,8 +216,7 @@ export default function Home() {
                     alt="Students collaborating on campus"
                     className="h-72 w-full object-cover sm:h-80"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-                  <div className="absolute bottom-4 left-4 right-4 text-white">
+                  <div className="absolute inset-x-0 bottom-0 bg-primary p-4 text-primary-foreground">
                     <p className="text-xs uppercase tracking-wider text-accent font-semibold">Live Preview</p>
                     <p className="text-lg font-bold">1 Form. Multiple Schools. Zero Hassle.</p>
                   </div>

@@ -95,8 +95,9 @@
     @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8;
   }
   .surface-grid {
+    background-color: hsl(var(--secondary));
     background-image:
-      radial-gradient(circle at 1px 1px, hsl(var(--border)) 1px, transparent 0);
+      radial-gradient(circle at 1px 1px, hsl(var(--border)) 1px, hsl(var(--secondary)) 0);
     background-size: 22px 22px;
   }
 }

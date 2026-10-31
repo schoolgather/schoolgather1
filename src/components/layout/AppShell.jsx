@@ -205,7 +205,7 @@ export default function AppShell() {
 
       <CompareBar />
 
-      <footer className="mt-16 border-t border-border/70 bg-secondary/40">
+      <footer className="mt-16 border-t border-border bg-secondary">
         <div className="container-page grid gap-8 py-12 sm:grid-cols-2 lg:grid-cols-4">
           <div>
             <Brand />
