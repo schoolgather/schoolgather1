@@ -81,16 +81,36 @@ const makeEntity = (table) => {
   };
 };
 
-const notAvailable = async () => {
-  throw new Error("File uploads are not set up yet.");
+const APPLICATION_DOCUMENTS_BUCKET = "application-documents";
+const SIGNED_URL_SECONDS = 300;
+
+const UploadPrivateFile = async ({ file }) => {
+  const { data: userData, error: userError } = await client().auth.getUser();
+  if (userError || !userData?.user) throw new Error("Please sign in before uploading documents.");
+  const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
+  const path = `${userData.user.id}/${crypto.randomUUID()}-${safeName}`;
+  const { error } = await client()
+    .storage.from(APPLICATION_DOCUMENTS_BUCKET)
+    .upload(path, file, { contentType: file.type, upsert: false });
+  if (error) throw error;
+  return { file_uri: path };
+};
+
+const CreateFileSignedUrl = async ({ file_uri }) => {
+  const { data, error } = await client()
+    .storage.from(APPLICATION_DOCUMENTS_BUCKET)
+    .createSignedUrl(file_uri, SIGNED_URL_SECONDS);
+  if (error) throw error;
+  if (!data?.signedUrl) throw new Error("The document link could not be created.");
+  return { signed_url: data.signedUrl };
 };
 
 export const db = {
   entities: Object.fromEntries(Object.entries(TABLES).map(([name, table]) => [name, makeEntity(table)])),
   integrations: {
     Core: {
-      UploadFile: notAvailable,
-      CreateFileSignedUrl: notAvailable,
+      UploadPrivateFile,
+      CreateFileSignedUrl,
     },
   },
 };
