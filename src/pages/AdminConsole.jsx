@@ -18,12 +18,7 @@ import SignInPrompt from "@/components/common/SignInPrompt";
 import { useToast } from "@/components/ui/use-toast";
 import { useSession } from "@/lib/permissions";
 import { CURRICULA } from "@/lib/constants";
-
-const slugify = (text) =>
-  String(text || "")
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-|-$/g, "");
+import { slugify } from "@/lib/utils";
 
 export default function AdminConsole() {
   const { user, email, isAuthenticated, isSuperAdmin, isLoadingAuth } = useSession();

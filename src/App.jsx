@@ -17,6 +17,7 @@ import Apply from '@/pages/Apply';
 import StudentDashboard from '@/pages/StudentDashboard';
 import SchoolDashboard from '@/pages/SchoolDashboard';
 import AdminConsole from '@/pages/AdminConsole';
+import SchoolDesk from '@/pages/SchoolDesk';
 import Login from '@/pages/Login';
 import Register from '@/pages/Register';
 import ForgotPassword from '@/pages/ForgotPassword';
@@ -58,6 +59,7 @@ const AuthenticatedApp = () => {
         <Route path="/dashboard" element={<StudentDashboard />} />
         <Route path="/dashboard/school" element={<SchoolDashboard />} />
         <Route path="/admin" element={<AdminConsole />} />
+        <Route path="/school-desk-q7m2v9x4k1" element={<SchoolDesk />} />
       </Route>
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
