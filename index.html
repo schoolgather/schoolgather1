@@ -31,9 +31,12 @@
         entities: new Proxy({}, {
           get: () => ({
             filter: async () => ({ items: [] }),
+            list: async () => ({ items: [] }),
             get: async () => null,
+            count: async () => 0,
             create: async (data) => ({ id: 'mock_' + Date.now(), ...data }),
-            update: async (data) => ({ ...data }),
+            update: async (id, data) => ({ id, ...data }),
+            bulkUpdate: async () => ({}),
             delete: async () => ({})
           })
         }),
