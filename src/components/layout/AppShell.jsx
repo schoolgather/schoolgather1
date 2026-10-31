@@ -15,26 +15,23 @@ import CompareBar from "@/components/schools/CompareBar";
 import { useCompareStore } from "@/lib/store";
 import { initialsOf, useSession } from "@/lib/permissions";
 import { cn } from "@/lib/utils";
-import { BRAND_LOGO, BRAND_NAME, BRAND_TAGLINE } from "@/lib/constants";
 
 const NAV = [
-  { to: "/schools", label: "Discover Schools", icon: Search },
-  { to: "/match", label: "2-Min Match Quiz", icon: Sparkles, badge: "Popular" },
+  { to: "/schools", label: "Discover schools", icon: Search },
+  { to: "/match", label: "Find my match", icon: Sparkles },
   { to: "/compare", label: "Compare", icon: Scale },
 ];
 
 function Brand() {
   return (
     <Link to="/" className="flex items-center gap-2.5 group">
-      <img
-        src={BRAND_LOGO}
-        alt={BRAND_NAME}
-        className="h-10 w-10 rounded-xl object-cover shadow-sm ring-1 ring-border/60"
-      />
+      <span className="grid h-9 w-9 place-items-center rounded-xl bg-primary text-primary-foreground shadow-sm">
+        <GraduationCap className="h-5 w-5" strokeWidth={2.2} />
+      </span>
       <span className="leading-none">
-        <span className="block font-display text-lg font-semibold tracking-tight">{BRAND_NAME}</span>
+        <span className="block font-display text-lg font-semibold tracking-tight">EduRoute</span>
         <span className="block text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
-          {BRAND_TAGLINE}
+          School admissions
         </span>
       </span>
     </Link>
@@ -117,11 +114,6 @@ export default function AppShell() {
                   }
                 >
                   {item.label}
-                  {item.badge && (
-                    <span className="ml-1.5 rounded-full bg-primary/10 px-1.5 py-0.5 text-[10px] font-semibold text-primary">
-                      {item.badge}
-                    </span>
-                  )}
                   {item.to === "/compare" && count > 0 && (
                     <span className="ml-1.5 rounded-full bg-accent px-1.5 py-0.5 text-[10px] font-bold text-accent-foreground">
                       {count}
@@ -132,15 +124,9 @@ export default function AppShell() {
             </nav>
           </div>
           <div className="flex items-center gap-2">
-            <Link
-              to="/dashboard/school"
-              className="hidden text-xs font-semibold text-muted-foreground transition hover:text-primary lg:inline-block px-2"
-            >
-              School Portal
-            </Link>
             <AccountMenu />
             <Button asChild size="sm" className="hidden sm:inline-flex">
-              <Link to="/schools">Find Schools</Link>
+              <Link to="/schools">Start applying</Link>
             </Button>
             <Button variant="ghost" size="icon" className="md:hidden" onClick={() => setOpen(true)}>
               <Menu className="h-5 w-5" />
@@ -208,8 +194,7 @@ export default function AppShell() {
           <div>
             <Brand />
             <p className="mt-3 max-w-xs text-sm text-muted-foreground">
-              One family profile, every school. Search, compare, visit and apply — without repeating
-              yourself at every gate.
+              One profile, every school. Discover, compare and apply with a single admissions record.
             </p>
           </div>
           <div>
@@ -236,7 +221,7 @@ export default function AppShell() {
           </div>
         </div>
         <div className="border-t border-border/70 py-5 text-center text-xs text-muted-foreground">
-          © {new Date().getFullYear()} {BRAND_NAME}. Made with care for families and schools.
+          © {new Date().getFullYear()} EduRoute. A multi-tenant admissions platform.
         </div>
       </footer>
     </div>

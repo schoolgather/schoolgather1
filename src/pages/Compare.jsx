@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useCompareStore } from "@/lib/store";
 import { formatMoney, tuitionRange } from "@/lib/geo";
-import { SAMPLE_SCHOOLS } from "@/lib/sampleSchools";
 
 function Row({ label, schools, render }) {
   return (
@@ -42,20 +41,9 @@ export default function Compare() {
             Add up to four schools from the directory and their curricula, tuition and support will line
             up here.
           </p>
-          <div className="mt-6 flex flex-wrap justify-center gap-3">
-            <Button asChild>
-              <Link to="/schools">Browse schools <ArrowRight className="ml-1.5 h-4 w-4" /></Link>
-            </Button>
-            <Button
-              variant="outline"
-              onClick={() => {
-                clear();
-                SAMPLE_SCHOOLS.slice(0, 3).forEach((s) => toggle(s));
-              }}
-            >
-              Compare sample schools
-            </Button>
-          </div>
+          <Button asChild className="mt-6">
+            <Link to="/schools">Browse schools <ArrowRight className="ml-1.5 h-4 w-4" /></Link>
+          </Button>
         </div>
       </div>
     );

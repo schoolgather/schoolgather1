@@ -1,17 +1,12 @@
-import { db } from "@/lib/db";
-
 import React, { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { SearchX } from "lucide-react";
-
+import { base44 } from "@/api/base44Client";
 import SchoolCard from "@/components/schools/SchoolCard";
 import SchoolFilters from "@/components/schools/SchoolFilters";
 import { useSearchStore } from "@/lib/store";
 import { distanceToSchool, requestOrigin } from "@/lib/geo";
 import { useToast } from "@/components/ui/use-toast";
-import { SAMPLE_SCHOOLS } from "@/lib/sampleSchools";
-import { CURRICULA } from "@/lib/constants";
-import { Button } from "@/components/ui/button";
 
 export default function Schools() {
   const [params] = useSearchParams();
@@ -33,15 +28,8 @@ export default function Schools() {
   useEffect(() => {
     let active = true;
     setLoading(true);
-    db.entities.School.filter({ status: "published" }, { sort: "name", limit: 200 })
-      .then((page) => {
-        if (!active) return;
-        const items = page.items && page.items.length > 0 ? page.items : SAMPLE_SCHOOLS;
-        setSchools(items);
-      })
-      .catch(() => {
-        if (active) setSchools(SAMPLE_SCHOOLS);
-      })
+    base44.entities.School.filter({ status: "published" }, { sort: "name", limit: 200 })
+      .then((page) => active && setSchools(page.items || []))
       .finally(() => active && setLoading(false));
     return () => {
       active = false;
@@ -122,34 +110,7 @@ export default function Schools() {
         </p>
       </div>
 
-      <div className="mt-6 flex flex-wrap items-center gap-2">
-        <span className="text-xs font-semibold text-muted-foreground mr-1">Curriculum:</span>
-        <button
-          onClick={() => setFilters((prev) => ({ ...prev, curriculum: "Any" }))}
-          className={`rounded-full px-3.5 py-1 text-xs font-medium transition ${
-            filters.curriculum === "Any"
-              ? "bg-primary text-primary-foreground shadow-sm"
-              : "border border-border bg-card text-foreground hover:border-primary/40"
-          }`}
-        >
-          All Curricula
-        </button>
-        {CURRICULA.map((c) => (
-          <button
-            key={c}
-            onClick={() => setFilters((prev) => ({ ...prev, curriculum: c }))}
-            className={`rounded-full px-3.5 py-1 text-xs font-medium transition ${
-              filters.curriculum === c
-                ? "bg-primary text-primary-foreground shadow-sm"
-                : "border border-border bg-card text-foreground hover:border-primary/40"
-            }`}
-          >
-            {c}
-          </button>
-        ))}
-      </div>
-
-      <div className="mt-4">
+      <div className="mt-7">
         <SchoolFilters
           filters={filters}
           onChange={setFilters}

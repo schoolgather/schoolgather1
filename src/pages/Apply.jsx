@@ -1,10 +1,8 @@
-import { db } from "@/lib/db";
-
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { z } from "zod";
 import { ArrowLeft, ArrowRight, Check, FileText, Loader2, Trash2, Upload, GraduationCap } from "lucide-react";
-
+import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -14,7 +12,6 @@ import SignInPrompt from "@/components/common/SignInPrompt";
 import { useToast } from "@/components/ui/use-toast";
 import { useSession } from "@/lib/permissions";
 import { ACADEMIC_YEARS, DOCUMENT_KINDS, GRADES, STATUS_META } from "@/lib/constants";
-import { SAMPLE_SCHOOLS } from "@/lib/sampleSchools";
 import { cn } from "@/lib/utils";
 
 const STEPS = ["Applicant", "Academic", "Your story", "Documents", "Review"];
@@ -58,18 +55,9 @@ export default function Apply() {
 
   useEffect(() => {
     let active = true;
-    db.entities.School.get(schoolId)
-      .then((record) => {
-        if (!active) return;
-        if (record && record.name) {
-          setSchool(record);
-        } else {
-          setSchool(SAMPLE_SCHOOLS.find((s) => s.id === schoolId || s.slug === schoolId) || null);
-        }
-      })
-      .catch(() => {
-        if (active) setSchool(SAMPLE_SCHOOLS.find((s) => s.id === schoolId || s.slug === schoolId) || null);
-      });
+    base44.entities.School.get(schoolId)
+      .then((record) => active && setSchool(record))
+      .catch(() => active && setSchool(null));
     return () => {
       active = false;
     };
@@ -82,7 +70,7 @@ export default function Apply() {
     }
     let active = true;
     setLoading(true);
-    db.entities.Application.filter(
+    base44.entities.Application.filter(
       { school_id: schoolId, student_email: email },
       { sort: "-created_date", limit: 1 }
     )
@@ -139,7 +127,7 @@ export default function Apply() {
     }
     setUploading(true);
     try {
-      const { file_uri } = await db.integrations.Core.UploadPrivateFile({ file });
+      const { file_uri } = await base44.integrations.Core.UploadPrivateFile({ file });
       patch({
         documents: [
           ...form.documents,
@@ -195,8 +183,8 @@ export default function Apply() {
 
     try {
       const record = application
-        ? await db.entities.Application.update(application.id, payload)
-        : await db.entities.Application.create(payload);
+        ? await base44.entities.Application.update(application.id, payload)
+        : await base44.entities.Application.create(payload);
       setApplication(record);
       toast({
         title: status === "SUBMITTED" ? "Application submitted" : "Draft saved",

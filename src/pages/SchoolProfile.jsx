@@ -1,21 +1,19 @@
-import { db } from "@/lib/db";
-
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { CalendarCheck, GraduationCap, Mail, Phone, Globe, Users, Languages, Trophy, Sparkles, Images } from "lucide-react";
-
+import { base44 } from "@/api/base44Client";
 import SchoolProfileHeader from "@/components/schools/SchoolProfileHeader";
 import FeeScheduleCard from "@/components/schools/FeeScheduleCard";
 import AidCalculator from "@/components/schools/AidCalculator";
 import TourBookingDialog from "@/components/schools/TourBookingDialog";
 import MessageSchoolDialog from "@/components/schools/MessageSchoolDialog";
+import ReviewsSection from "@/components/reviews/ReviewsSection";
 import { Image } from "@/components/ui/image";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { useCompareStore } from "@/lib/store";
 import { useSession } from "@/lib/permissions";
 import { tuitionRange } from "@/lib/geo";
-import { SAMPLE_SCHOOLS } from "@/lib/sampleSchools";
 
 function ChipList({ items, icon: Icon }) {
   if (!items?.length) return <p className="text-sm text-muted-foreground">Not published yet.</p>;
@@ -45,37 +43,38 @@ export default function SchoolProfile() {
   const [saved, setSaved] = useState(false);
   const [bookmarkId, setBookmarkId] = useState(null);
   const [slots, setSlots] = useState([]);
+  const [reviews, setReviews] = useState([]);
+  const [reviewsLoading, setReviewsLoading] = useState(true);
   const [dialog, setDialog] = useState(null);
+
+  const loadReviews = () => {
+    setReviewsLoading(true);
+    base44.entities.Review.filter({ school_id: id }, { sort: "-created_date", limit: 100 })
+      .then((page) => setReviews(page.items || []))
+      .catch(() => setReviews([]))
+      .finally(() => setReviewsLoading(false));
+  };
+
+  useEffect(loadReviews, [id]);
 
   useEffect(() => {
     let active = true;
     setLoading(true);
     setNotFound(false);
-    db.entities.School.get(id)
+    base44.entities.School.get(id)
       .then((record) => {
         if (!active) return;
-        if (record && record.name) {
-          setSchool(record);
-          db.entities.ProfileView.create({
-            school_id: record.id,
-            school_admin_emails: record.admin_emails || [],
-            page: "profile",
-          }).catch(() => null);
-        } else {
-          const sample = SAMPLE_SCHOOLS.find((s) => s.id === id || s.slug === id);
-          if (sample) setSchool(sample);
-          else setNotFound(true);
-        }
+        setSchool(record);
+        base44.entities.ProfileView.create({
+          school_id: record.id,
+          school_admin_emails: record.admin_emails || [],
+          page: "profile",
+        }).catch(() => null);
       })
-      .catch(() => {
-        if (!active) return;
-        const sample = SAMPLE_SCHOOLS.find((s) => s.id === id || s.slug === id);
-        if (sample) setSchool(sample);
-        else setNotFound(true);
-      })
+      .catch(() => active && setNotFound(true))
       .finally(() => active && setLoading(false));
 
-    db.entities.TourSlot.filter({ school_id: id }, { sort: "date", limit: 6 })
+    base44.entities.TourSlot.filter({ school_id: id }, { sort: "date", limit: 6 })
       .then((page) => {
         if (!active) return;
         const today = new Date().toISOString().slice(0, 10);
@@ -91,7 +90,7 @@ export default function SchoolProfile() {
   useEffect(() => {
     if (!email || !id) return;
     let active = true;
-    db.entities.Bookmark.filter({ user_email: email, school_id: id }, { limit: 1 })
+    base44.entities.Bookmark.filter({ user_email: email, school_id: id }, { limit: 1 })
       .then((page) => {
         if (!active) return;
         const found = page.items?.[0];
@@ -117,12 +116,12 @@ export default function SchoolProfile() {
     if (!isAuthenticated) return signIn();
     try {
       if (saved && bookmarkId) {
-        await db.entities.Bookmark.delete(bookmarkId);
+        await base44.entities.Bookmark.delete(bookmarkId);
         setSaved(false);
         setBookmarkId(null);
         toast({ title: "Removed from saved schools" });
       } else {
-        const record = await db.entities.Bookmark.create({
+        const record = await base44.entities.Bookmark.create({
           user_email: email,
           school_id: school.id,
           school_name: school.name,
@@ -144,7 +143,7 @@ export default function SchoolProfile() {
 
   const handleApply = () => {
     if (!isAuthenticated) return signIn();
-    db.entities.ProfileView.create({
+    base44.entities.ProfileView.create({
       school_id: school.id,
       school_admin_emails: school.admin_emails || [],
       page: "apply",
@@ -186,10 +185,19 @@ export default function SchoolProfile() {
     );
   }
 
+  const ratingValue = reviews.length
+    ? reviews.reduce((sum, r) => sum + (Number(r.rating) || 0), 0) / reviews.length
+    : Number(school.rating) || 0;
+  const schoolWithRating = {
+    ...school,
+    rating: ratingValue,
+    review_count: reviews.length || school.review_count || 0,
+  };
+
   return (
     <div className="pb-16">
       <SchoolProfileHeader
-        school={school}
+        school={schoolWithRating}
         saved={saved}
         onToggleSave={toggleSave}
         onCompare={handleCompare}
@@ -259,6 +267,17 @@ export default function SchoolProfile() {
               </div>
             </section>
           )}
+
+          <ReviewsSection
+            school={school}
+            reviews={reviews}
+            loading={reviewsLoading}
+            onChanged={loadReviews}
+            isAuthenticated={isAuthenticated}
+            email={email}
+            user={user}
+            signIn={signIn}
+          />
 
           <section className="rounded-2xl border border-border bg-card p-6 shadow-sm">
             <h2 className="text-xl font-semibold">Upcoming tours</h2>

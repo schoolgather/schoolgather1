@@ -1,9 +1,7 @@
-import { db } from "@/lib/db";
-
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { FileText, Download, Trash2 } from "lucide-react";
-
+import { base44 } from "@/api/base44Client";
 import {
   Dialog,
   DialogContent,
@@ -25,7 +23,7 @@ export default function ApplicationDetailDialog({ application, open, onOpenChang
 
   const openDocument = async (doc) => {
     try {
-      const { signed_url } = await db.integrations.Core.CreateFileSignedUrl({
+      const { signed_url } = await base44.integrations.Core.CreateFileSignedUrl({
         file_uri: doc.file_uri,
         expires_in: 300,
       });
@@ -38,7 +36,7 @@ export default function ApplicationDetailDialog({ application, open, onOpenChang
   const withdraw = async () => {
     setBusy(true);
     try {
-      await db.entities.Application.delete(application.id);
+      await base44.entities.Application.delete(application.id);
       toast({ title: "Application withdrawn" });
       onOpenChange(false);
       onWithdrawn?.();
