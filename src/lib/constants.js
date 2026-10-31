@@ -1,9 +1,6 @@
-const db = globalThis.__B44_DB__ || { auth:{ isAuthenticated: async()=>false, me: async()=>null }, entities:new Proxy({}, { get:()=>({ filter:async()=>[], get:async()=>null, create:async()=>({}), update:async()=>({}), delete:async()=>({}) }) }), integrations:{ Core:{ UploadFile:async()=>({ file_url:'' }) } } };
-
 export const BRAND_NAME = "School Gather";
 export const BRAND_TAGLINE = "Find your school, together";
-export const BRAND_LOGO =
-  "https://media.db.com/images/public/6ae5a83517eb7a4bd4eec737/5fb4b6cd9_LOGO.png";
+export const BRAND_LOGO = "/LOGO.png";
 
 export const CURRICULA = ["IB", "British", "American", "National", "French", "Other"];
 
