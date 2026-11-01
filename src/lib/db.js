@@ -105,6 +105,9 @@ const CreateFileSignedUrl = async ({ file_uri }) => {
   return { signed_url: data.signedUrl };
 };
 
+export const setPlatformRole = (userId, role) =>
+  client().rpc("set_platform_role", { p_user_id: userId, p_role: role }).then(unwrap);
+
 export const db = {
   entities: Object.fromEntries(Object.entries(TABLES).map(([name, table]) => [name, makeEntity(table)])),
   integrations: {

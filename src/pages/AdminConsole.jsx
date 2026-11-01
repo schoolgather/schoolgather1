@@ -1,4 +1,4 @@
-import { db } from "@/lib/db";
+import { db, setPlatformRole } from "@/lib/db";
 
 import React, { useEffect, useState } from "react";
 import { Building2, Plus, ShieldCheck, Users, Trash2, ScrollText } from "lucide-react";
@@ -134,6 +134,16 @@ export default function AdminConsole() {
     await audit("school.visibility", `${school.name} set to ${next}`, school.id);
     toast({ title: next === "published" ? "School published" : "School unpublished" });
     load();
+  };
+
+  const changeRole = async (person, role) => {
+    try {
+      await setPlatformRole(person.id, role);
+      toast({ title: role === "admin" ? "Admin access granted" : "Admin access removed", description: person.email });
+      load();
+    } catch (error) {
+      toast({ title: "Could not update role", description: error.message, variant: "destructive" });
+    }
   };
 
   const removeSchool = async (school) => {
@@ -291,9 +301,20 @@ export default function AdminConsole() {
                       <p className="truncate font-medium">{person.full_name || person.email}</p>
                       <p className="truncate text-xs text-muted-foreground">{person.email}</p>
                     </div>
-                    <Badge variant={person.role === "admin" ? "default" : "secondary"} className="text-[10px]">
-                      {person.role}
-                    </Badge>
+                    <div className="flex shrink-0 items-center gap-2">
+                      <Badge variant={person.role === "admin" ? "default" : "secondary"} className="text-[10px]">
+                        {person.role}
+                      </Badge>
+                      {person.email !== email && (
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          onClick={() => changeRole(person, person.role === "admin" ? "user" : "admin")}
+                        >
+                          {person.role === "admin" ? "Remove admin" : "Make admin"}
+                        </Button>
+                      )}
+                    </div>
                   </li>
                 ))}
                 {users.length === 0 && <li className="py-3 text-sm text-muted-foreground">No users yet.</li>}
