@@ -29,7 +29,7 @@ export const SAMPLE_SCHOOLS = [
     learning_styles: ["Discussion & seminar led", "Creative & project-based", "Independent & self-paced"],
     support_services: ["University College Counseling", "EAL Language Support", "Learning Resource Center", "Wellness & Mental Health"],
     highlights: ["100% IB Diploma pass rate", "Top 1% average DP score of 37.8", "Ivy League & Oxbridge placements"],
-    grades_offered: ["Pre-K", "Kindergarten", "Grade 1", "Grade 2", "Grade 3", "Grade 4", "Grade 5", "Grade 6", "Grade 7", "Grade 8", "Grade 9", "Grade 10", "Grade 11", "Grade 12"],
+    grades_offered: ["P1", "P2", "P3", "P4", "P5", "P6", "S1", "S2", "S3", "S4", "S5", "S6"],
     fee_items: [
       { label: "Annual Tuition (PYP)", amount: 18000 },
       { label: "Annual Tuition (MYP)", amount: 24000 },
@@ -71,7 +71,7 @@ export const SAMPLE_SCHOOLS = [
     learning_styles: ["Structured & academic", "Discussion & seminar led"],
     support_services: ["Oxbridge Prep Mentorship", "Pastoral Tutoring", "SEN Specialist Support"],
     highlights: ["88% A* to A at A-Levels", "The Duke of Edinburgh Gold Award Center", "National Champions in Math Olympiad"],
-    grades_offered: ["Kindergarten", "Grade 1", "Grade 2", "Grade 3", "Grade 4", "Grade 5", "Grade 6", "Grade 7", "Grade 8", "Grade 9", "Grade 10", "Grade 11", "Grade 12"],
+    grades_offered: ["P1", "P2", "P3", "P4", "P5", "P6", "S1", "S2", "S3", "S4", "S5", "S6"],
     fee_items: [
       { label: "Primary Tuition (Reception - Year 6)", amount: 14000 },
       { label: "Secondary Tuition (Year 7 - 11)", amount: 20000 },
@@ -112,7 +112,7 @@ export const SAMPLE_SCHOOLS = [
     learning_styles: ["Creative & project-based", "Hands-on & practical", "Independent & self-paced"],
     support_services: ["College Admission Advisory", "Peer Tutoring Network", "Accelerated Math Track"],
     highlights: ["Ranked #1 STEM Private School in Region", "National Merit Scholars (34% of seniors)", "AP Capstone Excellence Award"],
-    grades_offered: ["Grade 1", "Grade 2", "Grade 3", "Grade 4", "Grade 5", "Grade 6", "Grade 7", "Grade 8", "Grade 9", "Grade 10", "Grade 11", "Grade 12"],
+    grades_offered: ["P1", "P2", "P3", "P4", "P5", "P6", "S1", "S2", "S3", "S4", "S5", "S6"],
     fee_items: [
       { label: "Lower School Tuition", amount: 16000 },
       { label: "Middle School Tuition", amount: 22000 },
@@ -153,7 +153,7 @@ export const SAMPLE_SCHOOLS = [
     learning_styles: ["Structured & academic", "Discussion & seminar led"],
     support_services: ["Français Langue Étrangère (FLE)", "Orientation Post-Bac Conseils"],
     highlights: ["100% Baccalauréat success rate", "74% with Mention Très Bien", "Direct pathway to Grandes Écoles"],
-    grades_offered: ["Pre-K", "Kindergarten", "Grade 1", "Grade 2", "Grade 3", "Grade 4", "Grade 5", "Grade 6", "Grade 7", "Grade 8", "Grade 9", "Grade 10", "Grade 11", "Grade 12"],
+    grades_offered: ["P1", "P2", "P3", "P4", "P5", "P6", "S1", "S2", "S3", "S4", "S5", "S6"],
     fee_items: [
       { label: "Maternelle / Primary", amount: 11000 },
       { label: "Collège (Middle School)", amount: 15500 },
@@ -193,7 +193,7 @@ export const SAMPLE_SCHOOLS = [
     learning_styles: ["Creative & project-based", "Hands-on & practical", "Sports & movement focused"],
     support_services: ["Dedicated Dean of Students", "English Immersion Academy", "Wellbeing Coaching"],
     highlights: ["Global Top 10 Eco-Schools", "Average IB Diploma score 38.6", "Zero-waste certified campus"],
-    grades_offered: ["Kindergarten", "Grade 1", "Grade 2", "Grade 3", "Grade 4", "Grade 5", "Grade 6", "Grade 7", "Grade 8", "Grade 9", "Grade 10", "Grade 11", "Grade 12"],
+    grades_offered: ["P1", "P2", "P3", "P4", "P5", "P6", "S1", "S2", "S3", "S4", "S5", "S6"],
     fee_items: [
       { label: "Junior School Tuition", amount: 21000 },
       { label: "Middle School Tuition", amount: 27500 },
@@ -233,11 +233,11 @@ export const SAMPLE_SCHOOLS = [
     learning_styles: ["Sports & movement focused", "Structured & academic", "Creative & project-based"],
     support_services: ["Academic Coaching", "Bilingual Support", "University Guidance"],
     highlights: ["98% of graduates receive their first-choice university offer", "National Champions in Hockey & Track"],
-    grades_offered: ["Kindergarten", "Grade 1", "Grade 2", "Grade 3", "Grade 4", "Grade 5", "Grade 6", "Grade 7", "Grade 8", "Grade 9", "Grade 10", "Grade 11", "Grade 12"],
+    grades_offered: ["P1", "P2", "P3", "P4", "P5", "P6", "S1", "S2", "S3", "S4", "S5", "S6"],
     fee_items: [
-      { label: "Kindergarten to Grade 6", amount: 13500 },
-      { label: "Grade 7 to Grade 10", amount: 18000 },
-      { label: "Grade 11 to Grade 12", amount: 22000 }
+      { label: "P1 to P6", amount: 13500 },
+      { label: "S1 to S4", amount: 18000 },
+      { label: "S5 to S6", amount: 22000 }
     ],
     contact_email: "admissions@kensington-collegiate.ca",
     contact_phone: "+1 416 978 2000",

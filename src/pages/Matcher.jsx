@@ -51,7 +51,7 @@ export default function Matcher() {
   const [saving, setSaving] = useState(false);
 
   const [answers, setAnswers] = useState({
-    grade: "Grade 6",
+    grade: "P6",
     curriculum: "Any",
     learningStyles: ["Creative & project-based"],
     interests: ["STEM & robotics", "Competitive sports"],

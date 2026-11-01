@@ -24,22 +24,7 @@ export const STATUS_META = {
   ENROLLED: { label: "Enrolled", dot: "bg-chart-3", chip: "bg-chart-3/20 text-chart-3" },
 };
 
-export const GRADES = [
-  "Pre-K",
-  "Kindergarten",
-  "Grade 1",
-  "Grade 2",
-  "Grade 3",
-  "Grade 4",
-  "Grade 5",
-  "Grade 6",
-  "Grade 7",
-  "Grade 8",
-  "Grade 9",
-  "Grade 10",
-  "Grade 11",
-  "Grade 12",
-];
+export const GRADES = ["P1", "P2", "P3", "P4", "P5", "P6", "S1", "S2", "S3", "S4", "S5", "S6"];
 
 export const ACADEMIC_YEARS = ["2026–2027", "2027–2028", "2028–2029"];
 
