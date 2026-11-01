@@ -322,16 +322,8 @@ export default function Home() {
       {/* Feature Suite Section */}
       <section className="border-y border-border/70 bg-secondary/30 py-16">
         <div className="container-page">
-          <div className="max-w-2xl">
-            <h2 className="text-2xl font-bold sm:text-3xl">
-              Everything an admissions journey needs.
-            </h2>
-            <p className="mt-2 text-sm text-muted-foreground">
-              Built to save families countless hours and give admissions officers qualified applicants.
-            </p>
-          </div>
-
           <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+
             {SUITE.map((item) => (
               <div key={item.title} className="rounded-2xl border border-border bg-card p-5 shadow-sm">
                 <span className="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10 text-primary">
